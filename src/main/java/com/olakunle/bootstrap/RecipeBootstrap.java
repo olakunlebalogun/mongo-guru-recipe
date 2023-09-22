@@ -5,6 +5,8 @@ import com.olakunle.domains.*;
 import com.olakunle.repositories.CategoryRepository;
 import com.olakunle.repositories.RecipeRepository;
 import com.olakunle.repositories.UnitOfMeasureRepository;
+import com.olakunle.repositories.reactive.UnitOfMeasureReactiveRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -22,18 +24,22 @@ import java.util.Optional;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
 
-    public RecipeBootstrap(CategoryRepository categoryRepository,
-                           RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
-        this.categoryRepository = categoryRepository;
-        this.recipeRepository = recipeRepository;
-        this.unitOfMeasureRepository = unitOfMeasureRepository;
-    }
+    // Cancelling soon
+    private final UnitOfMeasureReactiveRepository unitOfMeasureReactiveRepository;
+
+//    public RecipeBootstrap(CategoryRepository categoryRepository,
+//                           RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
+//        this.categoryRepository = categoryRepository;
+//        this.recipeRepository = recipeRepository;
+//        this.unitOfMeasureRepository = unitOfMeasureRepository;
+//    }
 
     @Override
     @Transactional
@@ -42,6 +48,9 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         loadUom();
         recipeRepository.saveAll(getRecipes());
         log.debug("Loading Bootstrap Data");
+
+        log.error("#######");
+        log.error("Count: " + unitOfMeasureReactiveRepository.count());
     }
 
     private void loadCategories(){
